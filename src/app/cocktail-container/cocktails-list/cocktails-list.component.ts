@@ -1,22 +1,26 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import {Cocktail} from '../../shared/cocktail.model';
+import { Component, OnInit } from '@angular/core';
+import { Cocktail } from '../../shared/models/cocktail.model';
+import { CocktailService } from '../../shared/services/cocktail.service';
 
-@Component({
-  selector: 'app-cocktails-list',
-  templateUrl: './cocktails-list.component.html',
-  styleUrls: ['./cocktails-list.component.css']
-})
+@Component( {
+    selector: 'app-cocktails-list',
+    templateUrl: './cocktails-list.component.html',
+    styleUrls: ['./cocktails-list.component.css']
+} )
 export class CocktailsListComponent implements OnInit {
-  @Input() cocktails: Cocktail[]; // on reçoit la valeur depuis le cocktail-container grace à l'input
-  @Output() public pick: EventEmitter<number> = new EventEmitter<number>();
-  constructor() { }
+    public cocktails: Cocktail[];
+    public actifCocktail = 0; // on reÃ§oit la valeur depuis le cocktail-container grace Ã  l'input
+    constructor( private cocktailService: CocktailService ) { }
 
-  ngOnInit() {
-  }
-  // fonction pickCocktail
-  pickCocktail(index: number): void  {
-    // on va emettre un evt pour informer au container quel cocktail on a cliqué
-    this.pick.emit(index); // emit grace à l'output
-  }
+    ngOnInit() {
+        this.cocktailService.cocktails.subscribe(( cocktails: Cocktail[] ) => {
+            this.cocktails = cocktails;
+        } ); // on subscribe et on reÃ§oit la valeur cocktails
+    }
+    // fonction pickCocktail
+    pickCocktail( index: number ): void {
+        this.actifCocktail = index;
+        this.cocktailService.selectCocktail( index );
+    }
 
 }
