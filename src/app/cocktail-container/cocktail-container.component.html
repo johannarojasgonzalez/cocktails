@@ -1,0 +1,5 @@
+
+<div class="row">
+	<app-cocktails-list [cocktails]="cocktails" (pick)="updateCocktail($event)" class="col-5"></app-cocktails-list><!-- on ecoute l'evt pick -->
+	<app-cocktails-details [cocktail]="cocktail" class="col-7"></app-cocktails-details>
+</div>
