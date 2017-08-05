@@ -7,20 +7,29 @@ import { CocktailsDetailsComponent } from './cocktail-container/cocktails-detail
 import { HeaderComponent } from './header/header.component';
 import { CocktailContainerComponent } from './cocktail-container/cocktail-container.component';
 import { ActiveDirective } from './shared/directives/active.directive';
+import { PanierComponent } from './panier/panier.component';
+import { IngredientListComponent } from './panier/ingredient-list/ingredient-list.component';
+import { AppRouting } from './app.routing';
+import { PanierService } from './shared/services/panier.service';
+import { CocktailsEditComponent } from './cocktail-container/cocktails-edit/cocktails-edit.component';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    CocktailsListComponent,
-    CocktailsDetailsComponent,
-    HeaderComponent,
-    CocktailContainerComponent,
-    ActiveDirective
-  ],
-  imports: [
-    BrowserModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
-})
+@NgModule( {
+    declarations: [
+        AppComponent,
+        CocktailsListComponent,
+        CocktailsDetailsComponent,
+        HeaderComponent,
+        CocktailContainerComponent,
+        ActiveDirective,
+        PanierComponent,
+        IngredientListComponent,
+        CocktailsEditComponent
+    ],
+    imports: [
+        BrowserModule,
+        AppRouting
+    ],
+    providers: [PanierService],
+    bootstrap: [AppComponent]
+} )
 export class AppModule { }

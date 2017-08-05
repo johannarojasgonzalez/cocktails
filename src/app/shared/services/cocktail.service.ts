@@ -1,23 +1,52 @@
 import { Injectable } from '@angular/core';
 import { Cocktail } from '../models/cocktail.model';
+import { Ingredient } from '../models/ingredient.model';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class CocktailService {
 
     public cocktails: BehaviorSubject<Cocktail[]> = new BehaviorSubject( [
-        new Cocktail( 'Mojito', 'http://recetamojito.info/img/mojito-cubano-841.jpg', 'Mojito' ),
-        new Cocktail( 'Margarita', 'http://recetamojito.info/img/mojito-cubano-841.jpg', 'Margarita' ),
-        new Cocktail( 'Sour', 'http://recetamojito.info/img/mojito-cubano-841.jpg', 'Sour' ),
-        new Cocktail( 'Martini', 'http://recetamojito.info/img/mojito-cubano-841.jpg', 'Martini' )
+        new Cocktail( 'Mojito',
+            'http://recetamojito.info/img/mojito-cubano-841.jpg',
+            'Mojito',
+            [
+                new Ingredient( 'Citron', 1 ),
+                new Ingredient( 'Perrier', 1 ),
+                new Ingredient( 'Menthe', 1 ),
+            ] ),
+        new Cocktail( 'Margarita',
+            'https://unareceta.com/wp-content/uploads/2016/08/receta-margarita-sierra-supreme.jpg',
+            'Margarita',
+            [
+                new Ingredient( 'Tequila', 1 ),
+                new Ingredient( 'Citron', 1 ),
+                new Ingredient( 'Sucre', 1 ),
+            ] ),
+        new Cocktail( 'Sour',
+            'http://thecocktaildrink.com/wp-content/uploads/thecocktaildrink/melon-sour-cocktail.jpg',
+            'Sour'
+            ,
+            [
+                new Ingredient( 'Whisky', 1 ),
+                new Ingredient( 'Citron', 1 ),
+                new Ingredient( 'Sucre', 1 ),
+            ] ),
+        new Cocktail( 'Martini',
+            'http://img.loquenosabias.com/cocteles/2012/09/05/coctel-martini-receta-y-preparacion.jpg',
+            'Martini',
+            [
+                new Ingredient( 'Ginebra', 1 ),
+                new Ingredient( 'Citron', 1 ),
+                new Ingredient( 'Sucre', 1 ),
+            ] )
     ] );
 
     // on garde ici le dernier cocktail séléctionné
 
-    public cocktail: BehaviorSubject<Cocktail> = new BehaviorSubject( this.cocktails.value[0] );
     constructor() { }
 
-    selectCocktail( index: number ): void {
-        this.cocktail.next( this.cocktails.value[index] );
+    getCocktail( index: number ): Cocktail {
+        return this.cocktails.value[index] ;
     }
 }
