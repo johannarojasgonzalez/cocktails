@@ -1,3 +1,25 @@
-<p>
-  cocktails-edit works!
-</p>
+<form [formGroup]="cocktailForm" (ngSubmit)="createCocktail()">
+  <div class="form-group">
+    <label>Nom: </label>
+    <input class="form-control" type="text" formControlName="name" />
+  </div>
+  <div class="form-group">
+    <label>Image: </label>
+    <input class="form-control" type="text" formControlName="img" />
+  </div>
+  <div class="form-group">
+    <label>Description: </label>
+    <textarea class="form-control" type="text" formControlName="desc"></textarea>
+  </div>
+  <hr>
+  <button class="btn btn-success" type="button" (click)="addIngredient()">Ajouter ingredient</button>
+  <hr>
+  <div formArrayName="ingredients">
+    <div [formGroup]="ingredient" class="form-group row" *ngFor="let ingredient of cocktailForm.get('ingredients').controls">
+        <input placeholder="name" class="form-control col-8" type="text" formControlName="name" />
+        <input placeholder="quantity" class="form-control col-8" type="number" formControlName="quantity" />
+    </div>
+  </div>
+  <button [disabled]="cocktailForm.invalid" class="btn btn-primary">Sauvegarder</button>
+  <button class="btn btn-secondary" [routerLink]="['../']">Annuler</button> <!-->revenir en arriere<-->
+</form>
