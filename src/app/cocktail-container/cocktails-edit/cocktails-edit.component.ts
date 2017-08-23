@@ -13,6 +13,7 @@ export class CocktailsEditComponent implements OnInit {
 
   public cocktailForm: FormGroup;
   public cocktail: Cocktail;
+  private edit: boolean;
 
   constructor(private activatedRoute: ActivatedRoute, private formBuilder: FormBuilder, private cocktailService: CocktailService) { }
 
@@ -21,10 +22,13 @@ export class CocktailsEditComponent implements OnInit {
     // on va identifier si on est sur la création ou édition d'un cocktail
     this.activatedRoute.params.subscribe((params: Params) => {
       if (params.index) {
-        this.cocktail = this.cocktailService.getCocktail(params.index);
-        this.initForm(this.cocktail);
-        console.log(this.cocktail);
+        this.edit = true;
+        this.cocktailService.getCocktail(params.index).subscribe((cocktail: Cocktail) => {
+          this.cocktail = cocktail;
+          this.initForm(this.cocktail);
+        });
       } else {
+        this.edit = false;
         this.initForm(new Cocktail('', '', '', []));
         console.log('no cocktail');
       }
@@ -36,7 +40,7 @@ export class CocktailsEditComponent implements OnInit {
       name: [cocktail.name, Validators.required],
       img: [cocktail.img, Validators.required],
       desc: [cocktail.desc],
-      ingredients: this.formBuilder.array( cocktail.ingredients.map( ingredient => this.formBuilder.group({
+      ingredients: this.formBuilder.array(cocktail.ingredients.map(ingredient => this.formBuilder.group({
         name: [ingredient.name],
         quantity: [ingredient.quantity]
       })))
@@ -51,6 +55,10 @@ export class CocktailsEditComponent implements OnInit {
   }
 
   createCocktail() {
-    this.cocktailService.addCocktail(this.cocktailForm.value);
+    if (this.edit) {
+      this.cocktailService.editCocktail(this.cocktailForm.value);
+    } else {
+      this.cocktailService.addCocktail(this.cocktailForm.value);
+    }
   }
 }

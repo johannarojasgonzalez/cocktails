@@ -1,61 +1,61 @@
 import { Injectable } from '@angular/core';
+import { Http } from '@angular/http';
 import { Cocktail } from '../models/cocktail.model';
 import { Ingredient } from '../models/ingredient.model';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable()
 export class CocktailService {
 
-    public cocktails: BehaviorSubject<Cocktail[]> = new BehaviorSubject([
-        new Cocktail('Mojito',
-            'http://recetamojito.info/img/mojito-cubano-841.jpg',
-            'Mojito',
-            [
-                new Ingredient('Citron', 1),
-                new Ingredient('Perrier', 1),
-                new Ingredient('Menthe', 1),
-            ]),
-        new Cocktail('Margarita',
-            'https://unareceta.com/wp-content/uploads/2016/08/receta-margarita-sierra-supreme.jpg',
-            'Margarita',
-            [
-                new Ingredient('Tequila', 1),
-                new Ingredient('Citron', 1),
-                new Ingredient('Sucre', 1),
-            ]),
-        new Cocktail('Sour',
-            'http://thecocktaildrink.com/wp-content/uploads/thecocktaildrink/melon-sour-cocktail.jpg',
-            'Sour'
-            ,
-            [
-                new Ingredient('Whisky', 1),
-                new Ingredient('Citron', 1),
-                new Ingredient('Sucre', 1),
-            ]),
-        new Cocktail('Martini',
-            'http://img.loquenosabias.com/cocteles/2012/09/05/coctel-martini-receta-y-preparacion.jpg',
-            'Martini',
-            [
-                new Ingredient('Ginebra', 1),
-                new Ingredient('Citron', 1),
-                new Ingredient('Sucre', 1),
-            ])
-    ]);
+    public cocktails: BehaviorSubject<Cocktail[]> = new BehaviorSubject(null);
 
     // on garde ici le dernier cocktail séléctionné
 
-    constructor() { }
+    constructor(private httpService: Http) {
+        // seulement la première fois afin d'inserer des données dans la base
+        // normalement cette requete se fait avec un post, mais le post avec firebase rajoute un clé qu'on veut pas
+        // c'est pour cela qu'on a utilisé put
+        // this.httpService.put('https://cocktails-a429c.firebaseio.com/cocktails.json', this.cocktails.value)
+        // .subscribe( res => console.log(res));
+        this.initCocktails();
+    }
 
-    getCocktail(index: number): Cocktail {
-        return this.cocktails.value[index];
+    initCocktails() {
+        this.httpService.get('https://cocktails-a429c.firebaseio.com/cocktails.json')
+            .map(res => res.json())
+            .subscribe((cocktails: Cocktail[]) => {
+                this.cocktails.next(cocktails);
+            });
+    }
+
+    getCocktail(index: number): Observable<Cocktail> {
+        return this.cocktails.filter(cocktails => cocktails != null)
+            .map(cocktails => cocktails[index]);
     }
 
     addCocktail(cocktail: Cocktail): void {
-        const cocktails = this.cocktails.value.slice(); // dernière valeur de cocktails, copie pas par reference
+        const cocktails = this.cocktails.value.slice(); // dernière valeur de cocktails, copie par valeur et non par reference
         cocktails.push(new Cocktail(cocktail.name,
             cocktail.img,
             cocktail.desc,
             cocktail.ingredients.map(ingredient => new Ingredient(ingredient.name, ingredient.quantity))));
-            this.cocktails.next(cocktails);
+        this.cocktails.next(cocktails);
     }
+
+    editCocktail(editCocktail: Cocktail): void {
+        const cocktails = this.cocktails.value.slice(); // dernière valeur de cocktails, copie par valeur et non par reference
+        // on va chercher notre cocktail à editer
+        // const index = cocktails.map(c => c.name).indexOf(editCocktail.name);
+        const index = cocktails.findIndex(c => c.name === editCocktail.name);
+        cocktails[index] = editCocktail;
+        this.cocktails.next(cocktails);
+        this.save();
+    }
+
+    save(): void {
+        console.log(this.cocktails.value);
+        this.httpService.put('https://cocktails-a429c.firebaseio.com/cocktails.json', this.cocktails.value)
+        .subscribe( res => console.log(res));
+    }
+
 }

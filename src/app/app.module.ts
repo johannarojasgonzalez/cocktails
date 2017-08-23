@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpModule } from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { CocktailsListComponent } from './cocktail-container/cocktails-list/cocktails-list.component';
@@ -12,6 +13,7 @@ import { IngredientListComponent } from './panier/ingredient-list/ingredient-lis
 import { AppRouting } from './app.routing';
 import { PanierService } from './shared/services/panier.service';
 import { CocktailsEditComponent } from './cocktail-container/cocktails-edit/cocktails-edit.component';
+import { FilterPipe } from './shared/pipes/filter.pipe';
 
 @NgModule( {
     declarations: [
@@ -23,13 +25,15 @@ import { CocktailsEditComponent } from './cocktail-container/cocktails-edit/cock
         ActiveDirective,
         PanierComponent,
         IngredientListComponent,
-        CocktailsEditComponent
+        CocktailsEditComponent,
+        FilterPipe
     ],
     imports: [
         BrowserModule,
         AppRouting,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        HttpModule
     ],
     providers: [PanierService],
     bootstrap: [AppComponent]
